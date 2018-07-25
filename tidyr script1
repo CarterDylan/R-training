@@ -1,0 +1,32 @@
+#tidyr  - 25/07/2018
+#My first cleaning and tidying script using tidyr for R - it makes use of chaining to tidy up the dataset and get it in a clean format for further work on
+
+#gathering student into into one table, splitting out the grades for each test into seperate columns then amending the name of the class from "class(X)" to X
+students3 %>%
+  gather(class, grade, class1:class5, na.rm = TRUE) %>%
+  spread(test, grade) %>%
+  mutate(class = parse_number(class)) %>%
+  print
+
+#splitting data into two different sets, student information and student grades
+
+#student information
+student_info <- students4 %>%
+  select(id, name, sex) %>%
+  unique %>%
+  print
+
+#student grades
+gradebook <- students4 %>%
+    select(id, class, midterm, final) %>%
+  print
+
+#selects all columns except those that contain the word "total", seperates a column into two seperate columns then groups the columns together and adds two new columns via mutate 
+sat %>%
+  select(-contains("total")) %>%
+  gather(part_sex, count, -score_range) %>%
+  separate(part_sex, c("part", "sex")) %>%
+  group_by(part, sex) %>%
+  mutate(total = sum(count),
+         prop = count / total
+  ) %>% print
